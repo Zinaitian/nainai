@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>五子棋</title>
+  <style>
+    #chessboard table td{
+      height: 20px;
+      width: 20px;
+      border: #000000 solid;
+      border-width: 0px 1px 1px 0px;
+      padding: 0px;
+      background-color: bisque;
+    }
+    #chessboard table{
+      border: #000000 solid;
+      border-width: 1px 0px 0px 1px;
+    }
+    .chessArea{
+      position: relative;
+      top: 10px;
+      left: 10px;
+      height: 20px;
+      width: 20px;
+    }
+    .blackChess{
+      height: 20px;
+      width: 20px;
+      border-radius: 10px;
+      background-color: black;
+    }
+    .whiteChess{
+      height: 20px;
+      width: 20px;
+      border-radius: 10px;
+      background-color: white;
+    }
+  </style>
+  <script src="js/jquery-3.1.1.min.js"></script>
+  <script>
+    $().ready(function (){
+      //构造HTML字符串
+      var size = 15;
+      var html = "<table cellspacing='0'>"
+      for(var i = 0; i <= size; i ++){
+        html += "<tr>";
+        for(var j = 0; j <= size; j ++){
+          var tag = j + "_" + i;
+          if(i == size || j == size)
+            html += "<td></td>";
+          else
+            html += "<td><div tag='" + tag + "' class='chessArea'></div></td>";
+        }
+        html += "</tr>";
+      }
+      html += "</table>";
+      $("#chessboard").html(html);
+      //落子事件
+      var color = "black";
+      $(".chessArea").on("click", function(){
+        var id = color + "_" + $(this).attr("tag");
+        //落子
+        $(this).html("<div id='" + id + "' class='" + color + "Chess'></div>");
+        if(judgeWin(color))
+          alert(color + " win!");
+        //交换颜色
+        if(color == "black")
+          color = "white";
+        else
+          color = "black";
+      });
+    });
+
+    //胜负判断
+    function judgeWin(color){
+      var isWin = false;
+      //拿到所有的棋子
+      $("." + color + "Chess").each(function (){
+        //当前棋子的坐标
+        var idItem = $(this).attr("id").split("_");
+        var x = parseInt(idItem[1]), y = parseInt(idItem[2]);
+        //判断右边是否五连
+        if($("#" + color + "_" + (x + 1) + "_" + y).length > 0 &&
+          $("#" + color + "_" + (x + 2) + "_" + y).length > 0 &&
+          $("#" + color + "_" + (x + 3) + "_" + y).length > 0 &&
+          $("#" + color + "_" + (x + 4) + "_" + y).length > 0
+        )
+          isWin = true;
+        //判断下边是否五连
+        if($("#" + color + "_" + x + "_" + (y + 1)).length > 0 &&
+                $("#" + color + "_" + x + "_" + (y + 2)).length > 0 &&
+                $("#" + color + "_" + x + "_" + (y + 3)).length > 0 &&
+                $("#" + color + "_" + x + "_" + (y + 4)).length > 0
+        )
+          isWin = true;
+        //判断右下是否五连
+        if($("#" + color + "_" + (x + 1) + "_" + (y + 1)).length > 0 &&
+                $("#" + color + "_" + (x + 2) + "_" + (y + 2)).length > 0 &&
+                $("#" + color + "_" + (x + 3) + "_" + (y + 3)).length > 0 &&
+                $("#" + color + "_" + (x + 4) + "_" + (y + 4)).length > 0
+        )
+          isWin = true;
+        //判断左下是否五连
+        if($("#" + color + "_" + (x - 1) + "_" + (y + 1)).length > 0 &&
+                $("#" + color + "_" + (x - 2) + "_" + (y + 2)).length > 0 &&
+                $("#" + color + "_" + (x - 3) + "_" + (y + 3)).length > 0 &&
+                $("#" + color + "_" + (x - 4) + "_" + (y + 4)).length > 0
+        )
+          isWin = true;
+        //如果已判断出胜负，则退出循环
+        if(isWin)
+          return false;
+      });
+      return isWin;
+    }
+    alert("123123");
+  </script>
+</head>
+<body>
+<div id="chessboard"></div>
+</body>
+</html>
